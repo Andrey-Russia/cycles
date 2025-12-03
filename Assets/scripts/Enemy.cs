@@ -5,23 +5,33 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public string enemyName = "Безымянный монстр";
+    public GameObject Prefab;
 
-    public int level = 1;
-
-    public float healthPoints = 100f;
-
-    public TextMeshProUGUI nameText;
-    public TextMeshProUGUI levelText;
-    public TextMeshProUGUI healthText;
+    private List<string> nameList = new List<string>()
+    {
+         "Огненный элементал", "Ледяной голем", "Темный маг", "Каменный страж", "Призрачный охотник"
+    };
 
     void Start()
     {
-        if (nameText != null && levelText != null && healthText != null)
+        for (int i = 0; i < 5; i++)
         {
-            nameText.text = "Имя: " + enemyName;
-            levelText.text = "Уровень: " + level.ToString();
-            healthText.text = "Здоровье: " + healthPoints.ToString("F0");
+            SpawnEnemy();
         }
+    }
+
+    void SpawnEnemy()
+    {
+        GameObject enemyInstance = Instantiate(Prefab, transform.position + Random.insideUnitSphere * 5f, Quaternion.identity);
+
+        Enemy enemyScript = enemyInstance.GetComponent<Enemy>();
+        enemyScript.enemyName = namesList[Random.Range(0, namesList.Count)];
+        enemyScript.healthPoints = Random.Range(10f, 100f); // Здоровье от 10 до 100
+        enemyScript.level = Random.Range(1, 6); // Уровень от 1 до 5
+
+        // Обновляем UI текстовые поля
+        enemyScript.nameText.text = "Имя: " + enemyScript.enemyName;
+        enemyScript.levelText.text = "Уровень: " + enemyScript.level.ToString();
+        enemyScript.healthText.text = "Здоровье: " + Mathf.RoundToInt(enemyScript.healthPoints).ToString(); // Округляем здоровье до целого числа
     }
 }
